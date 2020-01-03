@@ -85,17 +85,4 @@ export class HomePage {
         return text;
     }
 
-
-    rangeValue:any = 6;
-    textValue:any = "6";
-
-    valueChanged($event, type) {
-        if (type === 10) {
-            console.log(new Date());
-            this.rangeValue = parseFloat(this.textValue);
-        } else if (type === 20) {
-            console.log('range value changed:', $event);
-            this.textValue = this.rangeValue.toFixed(3);
-        }
-    }
 }

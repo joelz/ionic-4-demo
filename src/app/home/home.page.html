@@ -42,14 +42,5 @@
             <ion-label>Theme Your App</ion-label>
         </ion-item>
     </ion-list>
-
-    <ion-range color="secondary" [(ngModel)]="rangeValue" (ngModelChange)="valueChanged($event,20)"
-    step="1" min="1" max="50" >
-   
-    </ion-range>
-    <p>{{rangeValue}}</p>
-  
-    <input type="text" (keyup)="valueChanged($event,10)"  [(ngModel)]="textValue">
-
-
+    
 </ion-content>
