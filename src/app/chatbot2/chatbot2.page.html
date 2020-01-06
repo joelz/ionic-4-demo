@@ -1,0 +1,16 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>
+            KendoUI
+        </ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <kendo-chat [messages]="messages" [user]="user" (executeAction)="onAction($event)"
+        (sendMessage)="sendMessage($event)">
+    </kendo-chat>
+</ion-content>

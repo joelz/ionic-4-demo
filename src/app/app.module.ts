@@ -8,6 +8,8 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 
 import { Kommunicate } from '@ionic-native/kommunicate/ngx';
 
+import { ChatModule } from '@progress/kendo-angular-conversational-ui';
+
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 
@@ -17,7 +19,8 @@ import { AppRoutingModule } from './app-routing.module';
     imports: [
         BrowserModule,
         IonicModule.forRoot(),
-        AppRoutingModule
+        AppRoutingModule,
+        ChatModule
     ],
     providers: [
         StatusBar,
