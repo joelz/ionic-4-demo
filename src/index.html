@@ -16,6 +16,8 @@
     <link rel="stylesheet" href="https://unpkg.com/botui/build/botui.min.css" />
     <link rel="stylesheet" href="https://unpkg.com/botui/build/botui-theme-default.css" />
 
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2019.3.1023/styles/kendo.default-v2.min.css" />
+
     <!-- add to homescreen for ios -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
@@ -25,6 +27,96 @@
     <app-root></app-root>
     <script src="https://cdn.jsdelivr.net/vue/2.0.5/vue.min.js"></script>
     <script src="https://unpkg.com/botui/build/botui.js"></script>
+
+    <script src="https://kendo.cdn.telerik.com/2019.3.1023/js/jquery.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2019.3.1023/js/kendo.all.min.js"></script>
+
+    <!-- Load Promise Polyfill. Required by the DialogFlow Client API.-->
+    <script src="https://www.promisejs.org/polyfills/promise-6.1.0.js"></script>
+
+    <!-- Load DialogFlow Client API -->
+    <script src="https://cdn.rawgit.com/dialogflow/dialogflow-javascript-client/50e82e62/target/ApiAi.min.js"></script>
 </body>
 
 </html>
+
+<script>
+    window.DialogFlowAgent = kendo.Class.extend({
+        init: function (chat) {
+            this.chat = chat;
+            this.userInfo = {
+                id: "botty",
+                iconUrl: "./assets/InsuranceBot.png",
+                name: "Botty McbotFace"
+            };
+
+            this.agent = new ApiAi.ApiAiClient({ accessToken: "280344fb165a461a8ccfef7e1bb47e65" });
+
+            this.postEvent("Welcome");
+
+            this._timestamp;
+        },
+
+        postEvent: function (event) {
+            this.agent
+                .eventRequest(event)
+                .then($.proxy(this.onResponse, this));
+        },
+
+        postMessage: function (text) {
+            this.agent
+                .textRequest(text)
+                .then($.proxy(this.onResponse, this));
+        },
+
+        onResponse: function (response) {
+            this._timestamp = response.timestamp;
+
+            if (response.result && response.result.fulfillment) {
+                var fulfillment = response.result.fulfillment;
+                var data = fulfillment.data;
+
+                this.renderMessages(fulfillment.messages);
+
+                if (data && data.null) {
+                    this.renderAttachments(data.null);
+
+                    this.renderSuggestedActions(data.null.suggestedActions);
+                }
+            }
+        },
+
+        renderMessages: function (messages) {
+            var that = this;
+
+            $(messages).each(function (index, message) {
+                switch (message.type) {
+                    case 0:
+                        that.chat.renderMessage({ type: "text", text: message.speech, timestamp: that._timestamp }, that.userInfo);
+                        break;
+                    case 2:
+                        that.renderSuggestedActions(message.replies.map(function (reply) { return { title: reply, value: reply }; }));
+                        break;
+                    default:
+                }
+            });
+
+        },
+
+        renderAttachments: function (data) {
+            var that = this;
+            data.attachments = $(data.attachments).map(function (index, attachment) {
+                return {
+                    contentType: attachment.type || "heroCard",
+                    content: attachment
+                };
+            }).toArray();
+
+            this.chat.renderAttachments(data, this.userInfo);
+        },
+
+        renderSuggestedActions: function (suggestedActions) {
+            this.chat.renderSuggestedActions($(suggestedActions).toArray());
+        }
+    });
+</script>

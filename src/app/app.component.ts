@@ -30,6 +30,11 @@ export class AppComponent {
       title: 'Chatbot2',
       url: '/chatbot2',
       icon: 'bowtie'
+    },
+    {
+      title: 'Chatbot3',
+      url: '/chatbot3',
+      icon: 'bowtie'
     }
   ];
 
