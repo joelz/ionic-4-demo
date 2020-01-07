@@ -1,3 +1,4 @@
+// kendo UI Chat / Insurance sample : https://demos.telerik.com/kendo-ui/chat/index
 import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 
 declare let $: any;
