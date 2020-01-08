@@ -22,17 +22,17 @@ export class AppComponent {
       icon: 'list'
     },
     {
-      title: 'Chatbot',
+      title: 'BotUI',
       url: '/chatbot',
       icon: 'bowtie'
     },
     {
-      title: 'Chatbot2',
+      title: 'Kendo UI for Angular',
       url: '/chatbot2',
       icon: 'bowtie'
     },
     {
-      title: 'Chatbot3',
+      title: 'Kendo UI for jQuery',
       url: '/chatbot3',
       icon: 'bowtie'
     }
