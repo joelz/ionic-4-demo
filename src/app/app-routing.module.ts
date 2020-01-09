@@ -26,6 +26,10 @@ const routes: Routes = [
     {
         path: 'chatbot3',
         loadChildren: () => import('./chatbot3/chatbot3.module').then(m => m.Chatbot3PageModule)
+    },
+    {
+        path: 'chatbot4',
+        loadChildren: () => import('./chatbot4/chatbot4.module').then(m => m.Chatbot4PageModule)
     }
 ];
 

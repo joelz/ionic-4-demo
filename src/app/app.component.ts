@@ -35,6 +35,11 @@ export class AppComponent {
       title: 'Kendo UI for jQuery',
       url: '/chatbot3',
       icon: 'bowtie'
+    },
+    {
+      title: 'Kendo UI for jQuery(echo)',
+      url: '/chatbot4',
+      icon: 'bowtie'
     }
   ];
 
