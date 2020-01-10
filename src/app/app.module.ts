@@ -18,7 +18,7 @@ import { AppRoutingModule } from './app-routing.module';
     entryComponents: [],
     imports: [
         BrowserModule,
-        IonicModule.forRoot(),
+        IonicModule.forRoot({ scrollPadding: false }),
         AppRoutingModule,
         ChatModule
     ],
