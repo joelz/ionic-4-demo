@@ -37,7 +37,7 @@ const setScrollPadding = (input: HTMLElement, keyboardHeight: number) => {
     }
 
     // hacks start
-    if (input.data['no_ionic_scroll_padding'] && input.data['no_ionic_scroll_padding'] === 'true') {
+    if (input.dataset['no_ionic_scroll_padding'] && input.dataset['no_ionic_scroll_padding'] === 'true') {
         return;
     }
     // hacks end
