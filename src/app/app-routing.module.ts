@@ -15,21 +15,25 @@ const routes: Routes = [
         path: 'list',
         loadChildren: () => import('./list/list.module').then(m => m.ListPageModule)
     },
+    // {
+    //     path: 'chatbot',
+    //     loadChildren: () => import('./chatbot/chatbot.module').then(m => m.ChatbotPageModule)
+    // },
+    // {
+    //     path: 'chatbot2',
+    //     loadChildren: () => import('./chatbot2/chatbot2.module').then(m => m.Chatbot2PageModule)
+    // },
+    // {
+    //     path: 'chatbot3',
+    //     loadChildren: () => import('./chatbot3/chatbot3.module').then(m => m.Chatbot3PageModule)
+    // },
+    // {
+    //     path: 'chatbot4',
+    //     loadChildren: () => import('./chatbot4/chatbot4.module').then(m => m.Chatbot4PageModule)
+    // },
     {
-        path: 'chatbot',
-        loadChildren: () => import('./chatbot/chatbot.module').then(m => m.ChatbotPageModule)
-    },
-    {
-        path: 'chatbot2',
-        loadChildren: () => import('./chatbot2/chatbot2.module').then(m => m.Chatbot2PageModule)
-    },
-    {
-        path: 'chatbot3',
-        loadChildren: () => import('./chatbot3/chatbot3.module').then(m => m.Chatbot3PageModule)
-    },
-    {
-        path: 'chatbot4',
-        loadChildren: () => import('./chatbot4/chatbot4.module').then(m => m.Chatbot4PageModule)
+        path: 'chatbot5',
+        loadChildren: () => import('./chatbot5/chatbot5.module').then(m => m.Chatbot5PageModule)
     }
 ];
 

@@ -14,14 +14,17 @@
         <ion-list-header>
             <ion-label>Demo</ion-label>
         </ion-list-header>
-        <ion-item (click)="startChat()">
+        <ion-item (click)="startChat()" detail>
             <ion-icon slot="start" color="medium" name="chatboxes"></ion-icon>
             <ion-label>kommunicate live chat</ion-label>
         </ion-item>
-
+        <ion-item routerLink="/chatbot5">
+            <ion-icon slot="start" color="primary" name="chatboxes"></ion-icon>
+            <ion-label>Chatbot using Kendo UI</ion-label>
+        </ion-item>
     </ion-list>
 
-    <ion-list lines="none">
+    <!-- <ion-list lines="none">
         <ion-list-header>
             <ion-label>Resources</ion-label>
         </ion-list-header>
@@ -41,7 +44,7 @@
             <ion-icon slot="start" color="medium" name="color-fill"></ion-icon>
             <ion-label>Theme Your App</ion-label>
         </ion-item>
-    </ion-list>
+    </ion-list> -->
     <br /><br /><br /><br /><br /><br /><br /><br />
     <h4>Input keyboard test</h4>
     <br /><br /><br /><br /><br /><br /><br /><br />

@@ -22,24 +22,29 @@ export class AppComponent {
             url: '/list',
             icon: 'list'
         },
+        // {
+        //     title: 'BotUI',
+        //     url: '/chatbot',
+        //     icon: 'bowtie'
+        // },
+        // {
+        //     title: 'Kendo UI for Angular',
+        //     url: '/chatbot2',
+        //     icon: 'bowtie'
+        // },
+        // {
+        //     title: 'Kendo UI for jQuery',
+        //     url: '/chatbot3',
+        //     icon: 'bowtie'
+        // },
+        // {
+        //     title: 'Kendo UI for jQuery(echo)',
+        //     url: '/chatbot4',
+        //     icon: 'bowtie'
+        // },
         {
-            title: 'BotUI',
-            url: '/chatbot',
-            icon: 'bowtie'
-        },
-        {
-            title: 'Kendo UI for Angular',
-            url: '/chatbot2',
-            icon: 'bowtie'
-        },
-        {
-            title: 'Kendo UI for jQuery',
-            url: '/chatbot3',
-            icon: 'bowtie'
-        },
-        {
-            title: 'Kendo UI for jQuery(echo)',
-            url: '/chatbot4',
+            title: 'Chatbot',
+            url: '/chatbot5',
             icon: 'bowtie'
         }
     ];
