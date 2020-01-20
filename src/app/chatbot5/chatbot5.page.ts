@@ -21,6 +21,7 @@ export class Chatbot5Page implements OnInit, AfterViewInit, OnDestroy {
     chat: any;
     setSailAgent: any;
     endpoint = 'http://localhost:3030/api/chatbot/v1';
+    // endpoint = 'https://setsail-dc1979.appspot.com/api/chatbot/v1';
 
     constructor(
         private platform: Platform,
@@ -87,7 +88,7 @@ export class Chatbot5Page implements OnInit, AfterViewInit, OnDestroy {
             // Fires when a message is posted through the Chat message box.
             sendMessage: (args) => {
                 console.log('sendMessage event:');
-                console.log(args);
+                // console.log(args);
                 setSailAgent.sendTextMessage(args.text);
             },
             // Fired when an action button is clicked inside an attachment template or when a suggestedAction is clicked.
@@ -99,7 +100,7 @@ export class Chatbot5Page implements OnInit, AfterViewInit, OnDestroy {
             // Fires when a message is posted to the Chat. Can be either through the message box, or through an action button click.
             post: (args) => {
                 console.log('post event:');
-                console.log(args);
+                // console.log(args);
             },
             toolClick: (ev) => {
                 if (ev.name === 'restart') {
@@ -115,11 +116,12 @@ export class Chatbot5Page implements OnInit, AfterViewInit, OnDestroy {
             }
         }).data('kendoChat');
 
-        const setSailAgent = new SetSailChatbotAgent(chat, bot, sender, this.endpoint);
+        const setSailAgent = new SetSailChatbotAgent(chat, bot, sender, this.endpoint, true);
 
         this.chat = chat;
         this.setSailAgent = setSailAgent;
 
+        setTimeout(() => { this.chat.toggleToolbar(true); }, 100);
         setTimeout(() => {
             chat.renderMessage({ type: 'text', text: 'Welocom! Try to type some words.', timestamp: new Date() }, bot);
         }, 1000 * 1);
@@ -141,9 +143,7 @@ export class Chatbot5Page implements OnInit, AfterViewInit, OnDestroy {
                     text: 'Cancel',
                     role: 'cancel',
                     cssClass: 'secondary',
-                    handler: () => {
-                        console.log('Confirm Cancel');
-                    }
+                    handler: () => {}
                 }, {
                     text: 'Ok',
                     handler: async (data) => {

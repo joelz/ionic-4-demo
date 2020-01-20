@@ -11,6 +11,7 @@ export class SetSailChatbotAgent {
     public sender: any;
     private timestamp: any;
     private endpoint = '';
+    private enablePhotoSwipe = false;
 
     constructor(chat, bot, sender, endpoint, enablePhotoSwipe?) {
         this.chat = chat;
@@ -18,13 +19,12 @@ export class SetSailChatbotAgent {
         this.sender = sender;
         this.endpoint = endpoint;
 
-        this.setupCustomTempaltes();
-
         if (enablePhotoSwipe) {
-            this.initPhotoSwipeFromDOM(chat.element[0]);
+            this.enablePhotoSwipe = enablePhotoSwipe;
         }
-        // this.chat.click((e) => { console.log(e); });
-        // this.sendPostback('Welcome');
+
+        this.setupCustomTempaltes();
+        this.setupClickHanlder();
     }
 
     public sendPostback(payload) {
@@ -198,7 +198,7 @@ export class SetSailChatbotAgent {
             data.attachmentLayout = 'carousel';
             data.attachments = attachment.payload.elements.map(n => {
                 const atta: any = {
-                    contentType: 'heroCard',
+                    contentType: 'heroCard2',
                     content: {
                         title: n.title,
                         subtitle: n.subtitle,
@@ -243,6 +243,25 @@ export class SetSailChatbotAgent {
         this.chat.renderSuggestedActions(quickReplies.map(n => { return { title: n.title, value: n.payload } }));
     }
 
+    private setupClickHanlder() {
+        const chatElement = this.chat.element[0];
+        if (this.enablePhotoSwipe) {
+            this.initPhotoSwipeFromDOM(chatElement);
+        }
+
+        // postback button
+        $(chatElement).on('click', (e) => {
+            // console.log(e);
+            const eTarget = e.target || e.srcElement;
+            if (eTarget && eTarget.className) {
+                const className = eTarget.className;
+                if (className && className.indexOf && className.indexOf('k-button-postback') > -1) {
+                    this.sendPostback(eTarget.dataset.value);
+                }
+            }
+        });
+    }
+
     private setupCustomTempaltes() {
         const VIDEO_CARD_TEMPLATE = kendo.template(
             '<div class="k-card k-card-type-rich">' +
@@ -268,9 +287,29 @@ export class SetSailChatbotAgent {
             '</div>'
         );
         kendo.chat.registerTemplate('image', IMAGE_CARD_TEMPLATE);
+
+        const HERO_CARD_2_CARD_TEMPLATE = kendo.template(
+            '<div class="k-card k-card-type-rich">' +
+            '<img src="#:images[0].url#" alt="" class="k-card-image">' +
+            '<div class="k-card-body">' +
+            '   <h5 class="k-card-title">#:title#</h5>' +
+            '    <h6 class="k-card-subtitle">#:subtitle#</h6>' +
+            '</div>' +
+            '<div class="k-card-actions k-card-actions-vertical">' +
+
+            '# for (var i = 0; i < buttons.length; i++) { #' +
+            '    <span class="k-card-action">' +
+            '        <span class="k-button-postback" data-value="#:buttons[i].value#">#:buttons[i].title#</span>' +
+            '    </span>' +
+            '# } #' +
+
+            '</div>' +
+            '</div>'
+        );
+        kendo.chat.registerTemplate('heroCard2', HERO_CARD_2_CARD_TEMPLATE);
     }
 
-    // chatElement: dom object
+// chatElement: dom object
     private initPhotoSwipeFromDOM(chatElement) {
 
         // <div class="k-message-list k-avatars" ...>
@@ -415,7 +454,7 @@ export class SetSailChatbotAgent {
         };
 
         chatElement.querySelector('.k-message-list').setAttribute('data-pswp-uid', kendo.guid());
-        chatElement.onclick = (e) => {
+        $(chatElement).on('click', (e) => {
             // console.log(e);
             const eTarget = e.target || e.srcElement;
             if (eTarget.parentNode && eTarget.parentNode.tagName) {
@@ -424,7 +463,8 @@ export class SetSailChatbotAgent {
                     onThumbnailsClick(e);
                 }
             }
-        };
+        });
 
     }
 }
+
