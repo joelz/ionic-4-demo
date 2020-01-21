@@ -20,8 +20,8 @@ export class Chatbot5Page implements OnInit, AfterViewInit, OnDestroy {
 
     chat: any;
     setSailAgent: any;
-    endpoint = 'http://localhost:3030/api/chatbot/v1';
-    // endpoint = 'https://setsail-dc1979.appspot.com/api/chatbot/v1';
+    // endpoint = 'http://localhost:3030/api/chatbot/v1';
+    endpoint = 'https://setsail-dc1979.appspot.com/api/chatbot/v1';
 
     constructor(
         private platform: Platform,

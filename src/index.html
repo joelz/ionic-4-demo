@@ -194,3 +194,29 @@
         }
     });
 </script -->
+
+<script>
+    // http://www.intheloftstudios.com/blog/detecting-html5-video-fullscreen-and-events
+    // screen orientation control for html video tag
+    $(document).on('webkitfullscreenchange mozfullscreenchange fullscreenchange', 'video', function (e) {
+        var state = document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen;
+        var event = state ? 'FullscreenOn' : 'FullscreenOff';
+        console.log('Event: ' + event);
+
+        if (window.cordova) {
+            if (event == 'FullscreenOn') {
+                try {
+                    // window.screen.orientation.unlock();
+                    window.StatusBar.hide();
+                } catch (e) {}
+            } else {
+                try {
+                    // window.screen.orientation.lock("portrait-primary").then(() => {
+                    //     console.log('orientation lock - portrait-primary@video fullscreen exit-index');
+                    // });
+                    window.StatusBar.show();
+                } catch (e) {}
+            }
+        }
+    });
+</script>
