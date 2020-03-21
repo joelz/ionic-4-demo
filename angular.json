@@ -70,6 +70,14 @@
             },
             "ci": {
               "progress": false
+            },
+            "hmr": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.hmr.ts"
+                }
+              ]
             }
           }
         },
@@ -84,6 +92,10 @@
             },
             "ci": {
               "progress": false
+            },
+            "hmr": {
+              "hmr": true,
+              "browserTarget": "app:build:hmr"
             }
           }
         },
