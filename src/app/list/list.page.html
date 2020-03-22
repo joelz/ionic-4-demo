@@ -20,6 +20,40 @@
         </ion-item>
     </ion-list>
 
+    <form [formGroup]="calculatorForm" style="border: 2px dotted gray;">
+        <label>
+            First Name:<input type="text" formControlName="firstName" required>
+        </label>
+    
+        <div formArrayName="interestRates">
+            <h3>Rates</h3> <button (click)="addRate()">Add Rate</button>
+            <div *ngFor="let rate of interestRates.controls; let i=index" [formGroupName]="i" class="rate-div">
+                From {{rate.value['periodFrom']}} To 
+                <button (click)="changeValuesInRatesForm(i,'periodTo','-')">-</button>
+                <input type="text" formControlName="periodTo">
+                <button (click)="changeValuesInRatesForm(i,'periodTo','+')">+</button>
+                <br>
+                Rate: <button (click)="changeValuesInRatesForm(i,'rate','-')">-</button>
+                <input type="text" formControlName="rate">
+                <button (click)="changeValuesInRatesForm(i,'rate','+')">+</button>
+                <br>
+                <input type="checkbox" formControlName="payCapital">
+                <label for="payCapital">Pay Capital</label>
+                <button (click)="deleteRate(i)" [disabled]="interestRates.controls.length==1">x</button>
+            </div>
+        </div>
+        <br/>
+        <button type="submit" [disabled]="!calculatorForm.valid">Submit</button>
+    </form>
+    <div style="border: 2px dotted gray; padding: 5px;">
+        <p>
+            Form Value: {{ calculatorForm.value | json }}
+        </p>
+        <p>
+            Form Status: {{ calculatorForm.status }}
+        </p>
+    </div>
+
     <div style="padding: 10px;">
         <ion-range color="secondary" [(ngModel)]="rangeValue" (ngModelChange)="valueChanged($event,20)"
         step="1" min="1" max="50" >
