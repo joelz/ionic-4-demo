@@ -24,6 +24,10 @@ export class ListPage implements OnInit {
         'build'
     ];
     public items: Array<{ title: string; note: string; icon: string }> = [];
+
+    rangeYear = 25;
+    textValue = '6';
+
     constructor(private fb: FormBuilder) {
         for (let i = 1; i < 4; i++) {
             this.items.push({
@@ -40,12 +44,14 @@ export class ListPage implements OnInit {
     }
 
     calculatorForm = this.fb.group({
-        firstName: ['', Validators.required],
+        firstName: ['first name', Validators.required],
         interestRates: this.fb.array([
             this.fb.group({
                 periodFrom: this.fb.control(1),
-                periodTo: this.fb.control(36),
+                periodTo: this.fb.control(this.rangeYear * 12),
+                periodToStr: this.fb.control('' + this.rangeYear * 12),
                 rate: this.fb.control(2.375),
+                rateStr: this.fb.control('2.375'),
                 payCapital: this.fb.control({
                     value: true,
                     disabled: true
@@ -58,52 +64,117 @@ export class ListPage implements OnInit {
         return this.calculatorForm.get('interestRates') as FormArray;
     }
 
-    updateProfile() {
-        this.calculatorForm.patchValue({
-            firstName: 'Nancy',
-            address: {
-                street: '123 Drew Street'
-            }
-        });
-    }
-
-    changeValuesInRatesForm(index, name, type) {
+    changeValuesInRatesForm(index, name, typeOrValue) {
+        const maxRate = 12;
+        const minRate = 0;
+        const rateStep = 0.125;
+        const periodStep = 1;
         if (name === 'periodTo') {
             let currentValue = this.interestRates.at(index).get('periodTo').value;
-            if (type === '+') {
-                currentValue += 1;
+            if (typeOrValue === '+') {
+                currentValue += periodStep;
+            } else if (typeOrValue === '-') {
+                currentValue -= periodStep;
             } else {
-                currentValue -= 1;
+                currentValue = typeOrValue;
             }
-            this.interestRates.at(index).get('periodTo').setValue(currentValue);
+            if (index === this.interestRates.length - 1) {// last
+                currentValue = this.rangeYear * 12;
+                this.interestRates.at(index).get('periodTo').setValue(currentValue);
+                this.interestRates.at(index).get('periodToStr').setValue('' + currentValue);
+            } else {
+                const min = this.interestRates.at(index).get('periodFrom').value;
+                const max = this.interestRates.at(index + 1).get('periodTo').value;
+                if (currentValue < min) {
+                    currentValue = min;
+                }
+                if (currentValue >= max) {
+                    currentValue = max - 1;
+                }
+                this.interestRates.at(index).get('periodTo').setValue(currentValue);
+                this.interestRates.at(index).get('periodToStr').setValue('' + currentValue);
+                this.interestRates.at(index + 1).get('periodFrom').setValue(currentValue + 1);
+            }
         } else if (name === 'rate') {
             let currentValue = this.interestRates.at(index).get('rate').value;
-            if (type === '+') {
-                currentValue += 0.125;
+            if (typeOrValue === '+') {
+                currentValue += rateStep;
+            } else if (typeOrValue === '-') {
+                currentValue -= rateStep;
             } else {
-                currentValue -= 0.125;
+                currentValue = typeOrValue;
+            }
+            if (currentValue < minRate) {
+                currentValue = minRate;
+            }
+            if (currentValue > maxRate) {
+                currentValue = maxRate;
             }
             this.interestRates.at(index).get('rate').setValue(currentValue);
+            this.interestRates.at(index).get('rateStr').setValue(currentValue.toFixed(3));
         }
     }
 
+    periodToStrChange(ev, index) {
+        console.log('periodToStrChange', this.interestRates.at(index).value);
+        const currentValue = parseInt(this.interestRates.at(index).get('periodToStr').value, 10);
+        if (isNaN(currentValue)) {
+            this.interestRates.at(index).get('periodToStr').setValue(this.interestRates.at(index).get('periodTo').value);
+            return;
+        }
+        this.changeValuesInRatesForm(index, 'periodTo', currentValue); // update periodTo
+    }
+
+    rateStrKeyup(ev, index) {
+        console.log('rateStrKeyup', this.interestRates.at(index).value);
+        const currentValue = parseFloat(this.interestRates.at(index).get('rateStr').value);
+        this.interestRates.at(index).get('rate').setValue(currentValue); // update rate
+    }
+
+    rateStrChange(ev, index) {
+        console.log('rateStrChange', this.interestRates.at(index).value);
+        const currentValue = parseFloat(this.interestRates.at(index).get('rateStr').value);
+        this.interestRates.at(index).get('rateStr').setValue(currentValue.toFixed(3)); // format rateStr
+    }
+
     addRate() {
-        // TODO- maximus rates? 10?
-        // totalMonth/10 per period
-        this.interestRates.at(this.interestRates.controls.length - 1).get('payCapital').enable();
-        this.interestRates.push(this.fb.group({
-            periodFrom: this.fb.control(37),
-            periodTo: this.fb.control(36),
-            rate: this.fb.control(2.375),
-            payCapital: this.fb.control({ value: true, disabled: true })
-        }));
+        const maxRatesCount = 10;
+        const slice = Math.floor(this.rangeYear * 12 / maxRatesCount);
+        let index = this.interestRates.length - 1;
+        for (; index >= 0; index--) {
+            this.interestRates.at(index).get('payCapital').enable();
+            const delta = this.interestRates.at(index).get('periodTo').value - this.interestRates.at(index).get('periodFrom').value;
+            console.log(index, delta, slice);
+            if (delta >= slice) {
+                const prevRate = this.interestRates.at(index).value;
+                console.log(prevRate);
+                this.interestRates.at(index).get('periodTo').setValue(prevRate.periodFrom + slice - 1);
+                this.interestRates.at(index).get('periodToStr').setValue(prevRate.periodFrom + slice - 1);
+                this.interestRates.insert(index + 1, this.fb.group({
+                    periodFrom: this.fb.control(prevRate.periodFrom + slice),
+                    periodTo: this.fb.control(prevRate.periodTo),
+                    periodToStr: this.fb.control(prevRate.periodTo),
+                    rate: this.fb.control(prevRate.rate),
+                    rateStr: this.fb.control(prevRate.rateStr),
+                    payCapital: this.fb.control(!!prevRate.payCapital)
+                }));
+                break;
+            }
+        }
+
+        this.interestRates.at(this.interestRates.length - 1).get('payCapital').disable();
     }
 
     deleteRate(index: number) {
-        // TODO- payCapital of last rate must be true
-        if (index === this.interestRates.controls.length - 1) {
+        if (index === this.interestRates.controls.length - 1) {// last
+            this.interestRates.at(index - 1).get('periodTo').setValue(this.rangeYear * 12);
+            this.interestRates.at(index - 1).get('periodToStr').setValue(this.rangeYear * 12);
             this.interestRates.at(index - 1).get('payCapital').setValue(true);
             this.interestRates.at(index - 1).get('payCapital').disable();
+        } else if (index === 0) {// first
+            this.interestRates.at(1).get('periodFrom').setValue(1);
+        } else {
+            this.interestRates.at(index + 1).get('periodFrom').setValue(this.interestRates.at(index).get('periodFrom').value);
         }
 
         this.interestRates.removeAt(index);
@@ -120,16 +191,28 @@ export class ListPage implements OnInit {
     //   this.router.navigate(['/list', JSON.stringify(item)]);
     // }
 
-    rangeValue = 6;
-    textValue = '6';
-
     valueChanged($event, type) {
         if (type === 10) {
             console.log(new Date());
-            this.rangeValue = parseFloat(this.textValue);
+            this.rangeYear = parseFloat(this.textValue);
         } else if (type === 20) {
             console.log('range value changed:', $event);
-            this.textValue = this.rangeValue.toFixed(3);
+            this.textValue = this.rangeYear.toFixed(3);
+        }
+
+        this.updateLastPeriod(this.rangeYear * 12);
+    }
+
+    updateLastPeriod(lastPeriod) {
+        let index = this.interestRates.length - 1;
+        for (; index >= 0; index--) {
+            if (this.interestRates.at(index).get('periodFrom').value <= lastPeriod) {
+                this.interestRates.at(index).get('periodTo').setValue(lastPeriod);
+                this.interestRates.at(index).get('periodToStr').setValue(lastPeriod);
+                break;
+            } else {
+                this.interestRates.removeAt(index);
+            }
         }
     }
 }

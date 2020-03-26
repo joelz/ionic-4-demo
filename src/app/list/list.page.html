@@ -10,31 +10,30 @@
 </ion-header>
 
 <ion-content>
-    <ion-list>
-        <ion-item *ngFor="let item of items">
-            <ion-icon [name]="item.icon" slot="start"></ion-icon>
-            {{item.title}}
-            <div class="item-note" slot="end">
-                {{item.note}}
-            </div>
-        </ion-item>
-    </ion-list>
+    <div style="padding: 10px;">
+        <ion-range color="secondary" step="1" min="1" max="30" 
+            [(ngModel)]="rangeYear" (ngModelChange)="valueChanged($event,20)"></ion-range>
+        <label>rangeYear: {{rangeYear}}</label><input type="text" style="width: 60px;" (keyup)="valueChanged($event,10)" [(ngModel)]="textValue">
+    </div>
 
     <form [formGroup]="calculatorForm" style="border: 2px dotted gray;">
-        <label>
-            First Name:<input type="text" formControlName="firstName" required>
-        </label>
     
         <div formArrayName="interestRates">
             <h3>Rates</h3> <button (click)="addRate()">Add Rate</button>
             <div *ngFor="let rate of interestRates.controls; let i=index" [formGroupName]="i" class="rate-div">
                 From {{rate.value['periodFrom']}} To 
                 <button (click)="changeValuesInRatesForm(i,'periodTo','-')">-</button>
-                <input type="text" formControlName="periodTo">
+                <input type="text" formControlName="periodToStr"
+                (change)="periodToStrChange($event, i)"
+                oninput="value =value.replace(/\D/g,'');"
+                >
                 <button (click)="changeValuesInRatesForm(i,'periodTo','+')">+</button>
                 <br>
                 Rate: <button (click)="changeValuesInRatesForm(i,'rate','-')">-</button>
-                <input type="text" formControlName="rate">
+                <input type="text" formControlName="rateStr" 
+                (keyup)="rateStrKeyup($event, i)"
+                (change)="rateStrChange($event, i)"
+                oninput="value=value.replace(/^(\-)*(\d+)\.(\d\d\d).*$/, '$1$2.$3');if(value<=0){value='0.000';this.setSelectionRange(0,99999);}if(value>12){value='12.000'}">
                 <button (click)="changeValuesInRatesForm(i,'rate','+')">+</button>
                 <br>
                 <input type="checkbox" formControlName="payCapital">
@@ -43,6 +42,9 @@
             </div>
         </div>
         <br/>
+        <!-- <label>
+            First Name:<input type="text" formControlName="firstName" required>
+        </label> -->
         <button type="submit" [disabled]="!calculatorForm.valid">Submit</button>
     </form>
     <div style="border: 2px dotted gray; padding: 5px;">
@@ -54,14 +56,14 @@
         </p>
     </div>
 
-    <div style="padding: 10px;">
-        <ion-range color="secondary" [(ngModel)]="rangeValue" (ngModelChange)="valueChanged($event,20)"
-        step="1" min="1" max="50" >
-    
-        </ion-range>
-        <label>rangeValue: {{rangeValue}}</label><br/>
-    
-        <input type="text" (keyup)="valueChanged($event,10)"  [(ngModel)]="textValue">
-    </div>
+    <!-- <ion-list>
+        <ion-item *ngFor="let item of items">
+            <ion-icon [name]="item.icon" slot="start"></ion-icon>
+            {{item.title}}
+            <div class="item-note" slot="end">
+                {{item.note}}
+            </div>
+        </ion-item>
+    </ion-list> -->
 
 </ion-content>
